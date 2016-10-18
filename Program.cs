@@ -29,19 +29,20 @@ namespace IpdCalculator
         private void Start()
         {
             Console.WriteLine("Inter-pupillary distance calculator for virtual reality games (3D Vision etc).");
-            Console.WriteLine("Use same unit of measurement for all distance entered.");
+            Console.WriteLine("Use same unit of measurement for all distance entered. (q for quit)");
 
             realIpd = ReadDouble("Inter-pupillary distance");
             distanceFromScreen = ReadDouble("Distance from screen");
-            desiredVirtualDistance = ReadDouble("Desired virtual distance");
-            addedDistance = desiredVirtualDistance - distanceFromScreen;
 
-            angle = GetRectangleTriangleAngle(realIpd / 2f, desiredVirtualDistance);
-            virtualIpd = GetRectangleTriangleWidth(addedDistance, angle) * 2f;
+            while (true)
+            {
+                desiredVirtualDistance = ReadDouble("Desired virtual distance");
+                addedDistance = desiredVirtualDistance - distanceFromScreen;
+                angle = GetRectangleTriangleAngle(realIpd / 2f, desiredVirtualDistance);
+                virtualIpd = GetRectangleTriangleWidth(addedDistance, angle) * 2f;
 
-            Console.WriteLine("Ipd on screen: " + virtualIpd);
-
-            Console.ReadLine();
+                Console.WriteLine("Ipd on screen: " + virtualIpd);
+            }
         }
 
         private double GetRectangleTriangleAngle(double width, double height)
@@ -57,10 +58,16 @@ namespace IpdCalculator
         private double ReadDouble(string text)
         {
             double doubleValue;
+            string input;
             do
             {
                 Console.WriteLine(text);
-            } while (!double.TryParse(Console.ReadLine(), out doubleValue));
+                input = Console.ReadLine();
+                if (input.ToLowerInvariant().StartsWith("q"))
+                {
+                    Environment.Exit(0);
+                }
+            } while (!double.TryParse(input, out doubleValue));
             return doubleValue;
         }
     }
